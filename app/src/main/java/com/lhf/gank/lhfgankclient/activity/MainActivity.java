@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity {
 //        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 //        tabLayout.setupWithViewPager(viewPager);
 
+
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("haha1");
         toolbar.setTitleTextColor(0xffffffff);
