@@ -8,12 +8,12 @@
     >
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
+        android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
+            android:id="@+id/main_appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
@@ -25,13 +25,6 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 />
 
-            <!--<android.support.design.widget.TabLayout-->
-                <!--android:id="@+id/tabs"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/material_blue_500"-->
-                <!--android:fillViewport="false" />-->
-            <!--stl_indicatorInterpolation Behavior of the indicator: 'linear' or 'smart'-->
             <com.ogaclejapan.smarttablayout.SmartTabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
@@ -66,7 +59,8 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -79,7 +73,6 @@
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/drawer_view"
         />
-    <!-- app:menu="@menu/my_navigation_items" -->
 
 </android.support.v4.widget.DrawerLayout>
 

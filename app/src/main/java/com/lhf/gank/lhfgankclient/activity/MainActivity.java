@@ -16,7 +16,7 @@ import android.view.View;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.fragments.CheeseListFragment;
-import com.lhf.gank.lhfgankclient.utils.LogUtil;
+import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
@@ -125,18 +125,10 @@ public class MainActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
 //        Adapter adapter = new Adapter(getSupportFragmentManager());
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new CheeseListFragment(), "Category 1");
-        adapter.addFragment(new CheeseListFragment(), "Category 2");
-        adapter.addFragment(new CheeseListFragment(), "Category 3");
-        adapter.addFragment(new CheeseListFragment(), "Category 1");
-        adapter.addFragment(new CheeseListFragment(), "Category 2");
-        adapter.addFragment(new CheeseListFragment(), "Category 3");
-        adapter.addFragment(new CheeseListFragment(), "Category 1");
-        adapter.addFragment(new CheeseListFragment(), "Category 2");
-        adapter.addFragment(new CheeseListFragment(), "Category 3");
-        adapter.addFragment(new CheeseListFragment(), "Category 1");
-        adapter.addFragment(new CheeseListFragment(), "Category 2");
-        adapter.addFragment(new CheeseListFragment(), "Category 3");
+        adapter.addFragment(new CheeseListFragment(), Constants.categorical_data);
+        adapter.addFragment(new CheeseListFragment(), Constants.about_us);
+        adapter.addFragment(new CheeseListFragment(), Constants.random_data);
+        adapter.addFragment(new CheeseListFragment(), Constants.every_data);
         viewPager.setAdapter(adapter);
     }
 
@@ -149,8 +141,7 @@ public class MainActivity extends BaseActivity {
                         materialMenuDrawable.animateIconState(MaterialMenuDrawable.IconState.BURGER);
                         drawer_layout.closeDrawers();
 
-
-                        LogUtil.i("LHF", "menuItem.getTitle():"+menuItem.getTitle());
+//                        LogUtil.i("LHF", "menuItem.getTitle():"+menuItem.getTitle());
                         return true;
                     }
                 });

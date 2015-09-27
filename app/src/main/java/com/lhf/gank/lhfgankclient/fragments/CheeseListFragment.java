@@ -17,11 +17,9 @@
 package com.lhf.gank.lhfgankclient.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -47,9 +45,9 @@ public class CheeseListFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new SimpleStringRecyclerViewAdapter(getActivity(),
-                getRandomSublist(Cheeses.sCheeseStrings, 30)));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+//        recyclerView.setAdapter(new SimpleStringRecyclerViewAdapter(getActivity(),
+//                getRandomSublist(Cheeses.sCheeseStrings, 30)));
     }
 
     private List<String> getRandomSublist(String[] array, int amount) {
@@ -106,19 +104,19 @@ public class CheeseListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mBoundString = mValues.get(position);
-            holder.mTextView.setText(mValues.get(position));
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, CheeseDetailActivity.class);
-                    intent.putExtra(CheeseDetailActivity.EXTRA_NAME, holder.mBoundString);
-
-                    context.startActivity(intent);
-                }
-            });
+//            holder.mBoundString = mValues.get(position);
+//            holder.mTextView.setText(mValues.get(position));
+//
+//            holder.mView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Context context = v.getContext();
+//                    Intent intent = new Intent(context, CheeseDetailActivity.class);
+//                    intent.putExtra(CheeseDetailActivity.EXTRA_NAME, holder.mBoundString);
+//
+//                    context.startActivity(intent);
+//                }
+//            });
         }
 
         @Override
