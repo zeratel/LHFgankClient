@@ -34,6 +34,23 @@ public class Constants {
     //all
     public static final String allURL = GankURL + "/all";
 
+    //福利
+    public static final String FuLiStr = "福利";
+    //Android
+    public static final String AndroidStr = "Android";
+    //ios
+    public static final String iosStr = "iOS";
+    //休息
+    public static final String restStr = "休息视频";
+    //拓展
+    public static final String tuozhanStr = "拓展资源";
+    //前端
+    public static final String qianduanStr = "前端";
+    //all
+    public static final String allStr = "all";
+
+
+
     public static final String categorical_data = "分类数据";
     public static final String about_us = "干货是什么";
     public static final String random_data = "随机数据";

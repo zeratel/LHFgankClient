@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.lhf.gank.lhfgankclient.R;
-import com.lhf.gank.lhfgankclient.fragments.CheeseListFragment;
+import com.lhf.gank.lhfgankclient.fragments.HomeFragment;
 import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
@@ -42,16 +42,20 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //toolbar的设置
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //使用NavigationView，使用theme，而不是style和background
         drawer_layout = (DrawerLayout)findViewById(R.id.drawer_layout);
         nv_left_drawer = (NavigationView)findViewById(R.id.nv_left_drawer);
 
+        //设置关闭效果包括按钮的动画等
         if (nv_left_drawer != null) {
             setupDrawerContent(nv_left_drawer);
         }
 
+        //viewPage，使用的SmartTabLayout
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.tabs);
         if (viewPager != null) {
@@ -59,17 +63,13 @@ public class MainActivity extends BaseActivity {
         }
         viewPagerTab.setViewPager(viewPager);
 
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(viewPager);
-
-
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        //title的设置
         toolbar.setTitle("haha1");
         toolbar.setTitleTextColor(0xffffffff);
 
-
+        //一开始是关闭的
         drawer_layout.closeDrawer(nv_left_drawer);
-
+        //关闭与打开设置
         drawer_layout.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //按钮的效果
         materialMenuDrawable = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         toolbar.setNavigationIcon(materialMenuDrawable);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -123,12 +124,21 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-//        Adapter adapter = new Adapter(getSupportFragmentManager());
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new CheeseListFragment(), Constants.categorical_data);
-        adapter.addFragment(new CheeseListFragment(), Constants.about_us);
-        adapter.addFragment(new CheeseListFragment(), Constants.random_data);
-        adapter.addFragment(new CheeseListFragment(), Constants.every_data);
+        //all
+        adapter.addFragment(new HomeFragment(Constants.allStr), Constants.allStr);
+        //福利
+        adapter.addFragment(new HomeFragment(Constants.FuLiStr), Constants.FuLiStr);
+        //Android
+        adapter.addFragment(new HomeFragment(Constants.AndroidStr), Constants.AndroidStr);
+        //ios
+        adapter.addFragment(new HomeFragment(Constants.iosStr), Constants.iosStr);
+        //休息
+        adapter.addFragment(new HomeFragment(Constants.restStr), Constants.restStr);
+        //拓展
+        adapter.addFragment(new HomeFragment(Constants.tuozhanStr), Constants.tuozhanStr);
+        //前端
+        adapter.addFragment(new HomeFragment(Constants.qianduanStr), Constants.qianduanStr);
         viewPager.setAdapter(adapter);
     }
 
@@ -148,6 +158,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    //viewPage的adapter
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<String> mFragmentTitles = new ArrayList<>();
@@ -181,33 +192,5 @@ public class MainActivity extends BaseActivity {
     protected String setTransitionMode() {
         return null;
     }
-
-//    // 获取数据
-//    private void getData() {
-//
-//        String url = Constants.allURL+"/1/1";
-//
-//        // "http://192.168.31.219:8080/ronyun/index.jsp?type=getToke&id=";
-//        // /*建立HTTP Get对象*/
-//        NetworkUtil networkUtil = new NetworkUtil(this);
-//        networkUtil.getStringForGet(url.trim(), null,
-//                new Response.Listener<String>() {
-//
-//                    @Override
-//                    public void onResponse(String arg0) {
-//                        LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
-//
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//                    @Override
-//                    public void onErrorResponse(VolleyError arg0) {
-//
-//                        LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + arg0);
-//                    }
-//                });
-//
-//    }
 
 }
