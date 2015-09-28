@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import android.view.ViewGroup;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.lhf.gank.lhfgankclient.R;
+import com.lhf.gank.lhfgankclient.adapter.RecycleAdapter;
 import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
 import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
@@ -99,7 +102,6 @@ public class HomeFragment extends Fragment {
     // 获取数据
     private void getGanHuo(String url) {
 
-        // "http://192.168.31.219:8080/ronyun/index.jsp?type=getToke&id=";
         // /*建立HTTP Get对象*/
         NetworkUtil networkUtil = new NetworkUtil(getActivity());
         networkUtil.getStringForGet(url.trim(), null,
@@ -126,7 +128,15 @@ public class HomeFragment extends Fragment {
 //        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 //        recyclerView.setAdapter(new SimpleStringRecyclerViewAdapter(getActivity(),
 //                getRandomSublist(Cheeses.sCheeseStrings, 30)));
-    }
 
+        //设置布局管理器
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //设置adapter
+        recyclerView.setAdapter(new RecycleAdapter());
+        //设置Item增加、移除动画
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        //添加分割线
+//        recyclerView.addItemDecoration();
+    }
 
 }

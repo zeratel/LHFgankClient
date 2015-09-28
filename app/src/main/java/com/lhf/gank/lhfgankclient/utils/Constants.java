@@ -49,12 +49,12 @@ public class Constants {
     //all
     public static final String allStr = "all";
 
-
-
     public static final String categorical_data = "分类数据";
     public static final String about_us = "干货是什么";
     public static final String random_data = "随机数据";
     public static final String every_data = "每日数据";
+
+    public static final String WEB_URL = "WEB_URL";
 
 
 
