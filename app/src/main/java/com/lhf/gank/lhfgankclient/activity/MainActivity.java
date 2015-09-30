@@ -34,8 +34,9 @@ public class MainActivity extends BaseActivity {
     private NavigationView nv_left_drawer;
     private boolean open = false;
 
-    private Toolbar toolbar;
     private MaterialMenuDrawable materialMenuDrawable;
+    private ArrayList<String> viewpagerTitleStr;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +44,16 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         //toolbar的设置
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //title的设置
+        toolbar.setTitle("");
+        toolbar.setTitleTextColor(0xffffffff);
+
         setSupportActionBar(toolbar);
 
         //使用NavigationView，使用theme，而不是style和background
-        drawer_layout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        nv_left_drawer = (NavigationView)findViewById(R.id.nv_left_drawer);
+        drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nv_left_drawer = (NavigationView) findViewById(R.id.nv_left_drawer);
 
         //设置关闭效果包括按钮的动画等
         if (nv_left_drawer != null) {
@@ -56,6 +61,7 @@ public class MainActivity extends BaseActivity {
         }
 
         //viewPage，使用的SmartTabLayout
+        initTitleStr();
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.tabs);
         if (viewPager != null) {
@@ -63,9 +69,24 @@ public class MainActivity extends BaseActivity {
         }
         viewPagerTab.setViewPager(viewPager);
 
-        //title的设置
-        toolbar.setTitle("haha1");
-        toolbar.setTitleTextColor(0xffffffff);
+        viewPagerTab.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                toolbar.setTitle(viewpagerTitleStr.get(position));
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        toolbar.setTitle(viewpagerTitleStr.get(0));
 
         //一开始是关闭的
         drawer_layout.closeDrawer(nv_left_drawer);
@@ -111,6 +132,30 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+
+    }
+
+    private void initTitleStr() {
+
+        if (viewpagerTitleStr == null) {
+
+            viewpagerTitleStr = new ArrayList<String>();
+            //all
+            viewpagerTitleStr.add(Constants.allStr);
+            //福利
+            viewpagerTitleStr.add(Constants.FuLiStr);
+            //Android
+            viewpagerTitleStr.add(Constants.AndroidStr);
+            //ios
+            viewpagerTitleStr.add(Constants.iosStr);
+            //休息
+            viewpagerTitleStr.add(Constants.restStr);
+            //拓展
+            viewpagerTitleStr.add(Constants.tuozhanStr);
+            //前端
+            viewpagerTitleStr.add(Constants.qianduanStr);
+        }
+
     }
 
     @Override
@@ -124,21 +169,13 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
+
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        //all
-        adapter.addFragment(new HomeFragment(Constants.allStr), Constants.allStr);
-        //福利
-        adapter.addFragment(new HomeFragment(Constants.FuLiStr), Constants.FuLiStr);
-        //Android
-        adapter.addFragment(new HomeFragment(Constants.AndroidStr), Constants.AndroidStr);
-        //ios
-        adapter.addFragment(new HomeFragment(Constants.iosStr), Constants.iosStr);
-        //休息
-        adapter.addFragment(new HomeFragment(Constants.restStr), Constants.restStr);
-        //拓展
-        adapter.addFragment(new HomeFragment(Constants.tuozhanStr), Constants.tuozhanStr);
-        //前端
-        adapter.addFragment(new HomeFragment(Constants.qianduanStr), Constants.qianduanStr);
+        if (viewpagerTitleStr != null) {
+            for (String title : viewpagerTitleStr) {
+                adapter.addFragment(new HomeFragment(title), title);
+            }
+        }
         viewPager.setAdapter(adapter);
     }
 

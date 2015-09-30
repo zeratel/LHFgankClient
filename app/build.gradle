@@ -29,3 +29,15 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.ogaclejapan.smarttablayout:library:1.4.1'
 }
+
+//dependencies = [
+////    compile fileTree(dir: 'libs', include: ['*.jar'])
+////"fileTree"      : fileTree(dir: 'libs', include: ['*.jar']),
+//"materialmenu"  : "com.balysv.materialmenu:material-menu-toolbar:1.5.4",
+//"design"        : "com.android.support:design:22.2.1",
+//"volley"        : "com.mcxiaoke.volley:library:1.0.19",
+//"picasso"       : "com.squareup.picasso:picasso:2.5.2",
+//"gson"          : "com.google.code.gson:gson:2.3.1",
+//"recyclerview"  : "com.android.support:recyclerview-v7:22.2.1",
+//"smarttablayout": "com.ogaclejapan.smarttablayout:library:1.4.1"
+//]

@@ -29,8 +29,10 @@ import android.view.ViewGroup;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.adapter.RecycleAdapter;
+import com.lhf.gank.lhfgankclient.beans.NormalData;
 import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
 import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
@@ -42,6 +44,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private int num = 20;
     private int pages = 1;
+    private RecycleAdapter recycleAdapter;
 
     public HomeFragment(String mode) {
         this.mode = mode;
@@ -54,13 +57,17 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        recycleAdapter = new RecycleAdapter(getActivity());
+        return view;
+    }
+
+    @Override
+    public void onStart() {
 
         setupRecyclerView(recyclerView);
 
         getData("/" + num + "/" + pages);
-
-//        getArguments()
-        return view;
+        super.onStart();
     }
 
     private void getData(String num_pages) {
@@ -110,8 +117,10 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(String arg0) {
                         LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
-
-
+                        Gson gson = new Gson();
+                        NormalData normalData = gson.fromJson(arg0,NormalData.class);
+                        recycleAdapter.setNormalData(normalData);
+                        recycleAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
 
@@ -132,7 +141,7 @@ public class HomeFragment extends Fragment {
         //设置布局管理器
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //设置adapter
-        recyclerView.setAdapter(new RecycleAdapter());
+        recyclerView.setAdapter(recycleAdapter);
         //设置Item增加、移除动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //添加分割线

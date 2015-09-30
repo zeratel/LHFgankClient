@@ -3,12 +3,17 @@ package com.lhf.gank.lhfgankclient.webView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.activity.BaseActivity;
 import com.lhf.gank.lhfgankclient.utils.Constants;
@@ -21,6 +26,9 @@ import com.lhf.gank.lhfgankclient.utils.LogUtil;
  * description
  */
 public class GenWebView extends BaseActivity {
+
+    private Toolbar toolbar;
+
     @Override
     protected String setTransitionMode() {
         return null;
@@ -34,14 +42,35 @@ public class GenWebView extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.web_view);
         webView = (WebView) findViewById(R.id.wv);
+
+        //toolbar的设置
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //按钮的效果
+        MaterialMenuDrawable materialMenuDrawable = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+        materialMenuDrawable.animateIconState(MaterialMenuDrawable.IconState.ARROW);
+        toolbar.setNavigationIcon(materialMenuDrawable);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        //需要先设置一次。。。
+        toolbar.setTitle("");
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+
     }
 
 
     @SuppressLint({ "SetJavaScriptEnabled" })
     protected void initData() {
-//		boolean show_yxbcookie = getIntent().getBooleanExtra(
-//				StringConstants.SHOW_YXBCOOKIE, true);
         url  = getIntent().getStringExtra(Constants.WEB_URL);
+        String title = getIntent().getStringExtra(Constants.TITLE);
+        if (!TextUtils.isEmpty(title)){
+            toolbar.setTitle(title);
+        }
 
         webView.loadUrl(url);
         LogUtil.i("LHF", url);

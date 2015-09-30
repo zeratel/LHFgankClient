@@ -56,6 +56,5 @@ public class Constants {
 
     public static final String WEB_URL = "WEB_URL";
 
-
-
+    public static final String TITLE = "TITLE";
 }
