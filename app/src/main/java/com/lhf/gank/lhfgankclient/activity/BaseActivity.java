@@ -58,6 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mContext = this;
         TAG = this.getClass().getName();
         AppManager.getAppManager().addActivity(this);
+
     }
 
 
@@ -222,15 +223,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        dismissProgressDialog();
+//        dismissProgressDialog();
         AppManager.getAppManager().removeActivity(this);
 
     }
 
-    protected void showProgressDialog() {
-    }
-
-    protected void dismissProgressDialog() {
-    }
+//    protected void showProgressDialog() {
+//    }
+//
+//    protected void dismissProgressDialog() {
+//    }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import android.view.ViewConfiguration;
  * 继承自SwipeRefreshLayout,从而实现滑动到底部时上拉加载更多的功能.
  *
  * @author mrsimple
-*/
+ */
 public class LHFSwipeRefreshLayout extends SwipeRefreshLayout {
 
     /**
@@ -93,6 +94,25 @@ public class LHFSwipeRefreshLayout extends SwipeRefreshLayout {
                 // 设置滚动监听器给recyclerView, 使得滚动的情况下也可以自动加载
 
 //                mrecyclerView.setOnScrollListener(this);
+
+                //添加监听
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        // 滚动时到了最底部也可以加载更多
+                        if (canLoad()) {
+                            loadData();
+                        }
+
+                        super.onScrolled(recyclerView, dx, dy);
+                    }
+
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                    }
+                });
+
                 Log.d(VIEW_LOG_TAG, "### 找到recyclerView");
             }
         }
@@ -145,8 +165,25 @@ public class LHFSwipeRefreshLayout extends SwipeRefreshLayout {
     private boolean isBottom() {
 
         if (recyclerView != null) {
-            LinearLayoutManager linearLayoutManager = (LinearLayoutManager)recyclerView.getLayoutManager();
-            return linearLayoutManager.findLastVisibleItemPosition()+1 == linearLayoutManager.getItemCount();
+            boolean flag = false;
+            if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                flag = linearLayoutManager.findLastVisibleItemPosition() + 1 == linearLayoutManager.getItemCount();
+
+            } else if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+
+                StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                //两列的传入null貌似他会自己创建个给我们
+                int[] temp = staggeredGridLayoutManager.findLastVisibleItemPositions(new int[2]);
+                boolean flag1 = temp[0]+1 == staggeredGridLayoutManager.getItemCount();
+                boolean flag2 = temp[1]+1 == staggeredGridLayoutManager.getItemCount();
+                flag = flag1 || flag2;
+
+            }
+
+            return flag;
+
         }
         return false;
     }
@@ -166,25 +203,25 @@ public class LHFSwipeRefreshLayout extends SwipeRefreshLayout {
     private void loadData() {
         if (mOnLoadListener != null) {
             // 设置状态
-//            setLoading(true);
+            setLoading(true);
             //
             mOnLoadListener.onLoad();
         }
     }
 
-//    /**
-//     * @param loading
-//     */
-//    public void setLoading(boolean loading) {
-//        isLoading = loading;
-//        if (isLoading) {
-//            mrecyclerView.addFooterView(mrecyclerViewFooter);
-//        } else {
-//            mrecyclerView.removeFooterView(mrecyclerViewFooter);
-//            mYDown = 0;
-//            mLastY = 0;
-//        }
-//    }
+    /**
+     * @param loading
+     */
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+        if (isLoading) {
+//            recyclerView.addFooterView(mrecyclerViewFooter);
+        } else {
+//            recyclerView.removeFooterView(mrecyclerViewFooter);
+            mYDown = 0;
+            mLastY = 0;
+        }
+    }
 
     /**
      * @param loadListener
@@ -206,8 +243,6 @@ public class LHFSwipeRefreshLayout extends SwipeRefreshLayout {
 //            loadData();
 //        }
 //    }
-
-
 
     /**
      * 加载更多的监听器

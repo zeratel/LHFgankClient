@@ -58,4 +58,6 @@ public class Constants {
 
     public static final String TITLE = "TITLE";
     public static final String NET_ERROR_RESPONSE = "网络异常，请稍后重试";
+    public static final String IS_ALL_LOAD = "没有更多内容啦~~~";
+    public static final String API_ERROR_RESPONSE = "API异常，请稍后重试";
 }

@@ -16,6 +16,7 @@
 
 package com.lhf.gank.lhfgankclient.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,18 +38,21 @@ import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.adapter.RecycleAdapter;
 import com.lhf.gank.lhfgankclient.beans.NormalData;
 import com.lhf.gank.lhfgankclient.utils.Constants;
+import com.lhf.gank.lhfgankclient.utils.LHFSwipeRefreshLayout;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
 import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
 
 public class HomeFragment extends Fragment {
 
     private String mode = "";
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private LHFSwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private int num = 20;
     private int pages = 1;
     private RecycleAdapter recycleAdapter;
     private View view;
+    private Context context;
+    private int lines = 2;
 
     public HomeFragment(String mode) {
         this.mode = mode;
@@ -57,19 +62,31 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        context = getActivity();
+
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
+        swipeRefreshLayout = (LHFSwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        recycleAdapter = new RecycleAdapter(getActivity());
+        recycleAdapter = new RecycleAdapter(context);
 
         setupRecyclerView(recyclerView);
 
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        //下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
+                pages = 1;
+                recycleAdapter.clearNormalData();
+                //手动下拉刷新
                 getData("/" + num + "/" + pages);
 
+                //5秒后取消刷新的标记
                 new WeakHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -77,12 +94,24 @@ public class HomeFragment extends Fragment {
                     }
                 }, 5000);
             }
-        });
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
 
+        });
+
+        //上拉加载
+        swipeRefreshLayout.setOnLoadListener(new LHFSwipeRefreshLayout.OnLoadListener() {
+            @Override
+            public void onLoad() {
+
+                //手动下拉刷新
+                getData("/" + num + "/" + pages);
+
+                //设置状态
+                swipeRefreshLayout.setLoading(false);
+
+                swipeRefreshLayout.setRefreshing(true);
+                LogUtil.i("LHF", "swipeRefreshLayout.setOnLoadListener");
+            }
+        });
 
         return view;
     }
@@ -90,7 +119,31 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
 
-        getData("/" + num + "/" + pages);
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                //貌似这玩意没有主动刷新的方法，这个只是显示个图。。。
+                swipeRefreshLayout.setRefreshing(true);
+
+                //dimss刷新的标记
+                new WeakHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 5000);
+
+                new WeakHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        getData("/" + num + "/" + pages);
+                    }
+                });
+
+
+            }
+        });
 
         super.onStart();
     }
@@ -104,6 +157,8 @@ public class HomeFragment extends Fragment {
             case Constants.FuLiStr:
                 //福利
                 getGanHuo(Constants.FuLiURL + num_pages);
+                //福利的特殊处理
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(lines,StaggeredGridLayoutManager.VERTICAL));
                 break;
             case Constants.AndroidStr:
                 //Android
@@ -135,7 +190,7 @@ public class HomeFragment extends Fragment {
     private void getGanHuo(String url) {
 
         // /*建立HTTP Get对象*/
-        NetworkUtil networkUtil = new NetworkUtil(getActivity());
+        NetworkUtil networkUtil = new NetworkUtil(context);
         networkUtil.setRoot(view);
         networkUtil.getStringForGet(url.trim(), null,
                 new Response.Listener<String>() {
@@ -143,13 +198,25 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(String arg0) {
                         LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
+
                         Gson gson = new Gson();
                         NormalData normalData = gson.fromJson(arg0, NormalData.class);
-                        recycleAdapter.setNormalData(normalData);
-                        recycleAdapter.notifyDataSetChanged();
+                        if (!normalData.getError() && normalData.getResults().size() != 0){
 
-//                        停止刷新
-                        swipeRefreshLayout.setRefreshing(false);
+                            recycleAdapter.addNormalData(normalData,mode);
+                            recycleAdapter.notifyDataSetChanged();
+
+                            //停止刷新
+                            swipeRefreshLayout.setRefreshing(false);
+
+                            //自动加一
+                            pages += 1;
+                        }else if (normalData.getResults().size() == 0){
+                            Snackbar.make(view, Constants.IS_ALL_LOAD, Snackbar.LENGTH_LONG).show();
+                        }else{
+                            Snackbar.make(view, Constants.API_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+                        }
+
                     }
                 }, new Response.ErrorListener() {
 
@@ -171,15 +238,13 @@ public class HomeFragment extends Fragment {
 //                getRandomSublist(Cheeses.sCheeseStrings, 30)));
 
         //设置布局管理器
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //设置adapter
         recyclerView.setAdapter(recycleAdapter);
         //设置Item增加、移除动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
 //        recyclerView.addItemDecoration();
-
-//        LHFSwipeRefreshLayout lhfSwipeRefreshLayout = new LHFSwipeRefreshLayout();
 
     }
 

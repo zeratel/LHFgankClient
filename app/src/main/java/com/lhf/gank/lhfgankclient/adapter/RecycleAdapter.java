@@ -2,17 +2,24 @@ package com.lhf.gank.lhfgankclient.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lhf.gank.lhfgankclient.R;
+import com.lhf.gank.lhfgankclient.activity.webview.GenWebView;
 import com.lhf.gank.lhfgankclient.beans.NormalData;
 import com.lhf.gank.lhfgankclient.utils.Constants;
-import com.lhf.gank.lhfgankclient.webView.GenWebView;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * com.lhf.gank.lhfgankclient.adapter
@@ -22,21 +29,12 @@ import com.lhf.gank.lhfgankclient.webView.GenWebView;
  */
 public class RecycleAdapter extends RecyclerView.Adapter {
 
-    private NormalData normalData;
     private Context context;
-
-    public RecycleAdapter(NormalData normalData, Context context) {
-        this.normalData = normalData;
-        this.context = context;
-
-    }
+    private List<NormalData.ResultsEntity> resultsEntitys = new ArrayList<NormalData.ResultsEntity>();
+    private String mode;
 
     public RecycleAdapter(Context context) {
         this.context = context;
-    }
-
-    public void setNormalData(NormalData normalData) {
-        this.normalData = normalData;
     }
 
     @Override
@@ -49,30 +47,67 @@ public class RecycleAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (normalData != null && !normalData.getError()){
+        if (resultsEntitys != null) {
 
-            ((MyViewHolder)holder).title.setText(normalData.getResults().get(position).getDesc());
-            ((MyViewHolder)holder).provider.setText(normalData.getResults().get(position).getWho());
-            ((MyViewHolder)holder).time.setText(normalData.getResults().get(position).getCreatedAt().split("T")[0]);
-            ((MyViewHolder)holder).rl.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, GenWebView.class);
-                    intent.putExtra(Constants.WEB_URL,normalData.getResults().get(position).getUrl());
-                    intent.putExtra(Constants.TITLE,normalData.getResults().get(position).getDesc());
-                    context.startActivity(intent);
-                }
-            });
+
+
+            if (!TextUtils.isEmpty(mode) && mode.equals(Constants.FuLiStr)) {
+                ((MyViewHolder) holder).iv.setVisibility(View.VISIBLE);
+                //以前我写的
+//                if (!TextUtils.isEmpty(tempWallPics.get(i).getUrl())) {
+//                    Picasso.with(mContext)
+//                            .load(tempWallPics.get(i).getUrl())
+//                            .placeholder(R.drawable.yxblogo_gray)
+//                            .error(R.drawable.yxblogo_gray).fit()
+//                            .centerCrop().into(imageView);
+//                } else {
+//                    Picasso.with(mContext).load(R.drawable.white_plank)
+//                            .error(R.drawable.white_plank).fit()
+//                            .centerCrop().into(imageView);
+//                }
+                Picasso.with(context).load(Uri.parse(resultsEntitys.get(position)
+                        .getUrl())).into(((MyViewHolder) holder).iv);
+
+                ((MyViewHolder) holder).title.setVisibility(View.GONE);
+                ((MyViewHolder) holder).provider.setVisibility(View.GONE);
+                ((MyViewHolder) holder).time.setVisibility(View.GONE);
+
+            } else {
+                ((MyViewHolder) holder).iv.setVisibility(View.GONE);
+                ((MyViewHolder) holder).title.setText(resultsEntitys.get(position).getDesc());
+                ((MyViewHolder) holder).provider.setText(resultsEntitys.get(position).getWho());
+                ((MyViewHolder) holder).time.setText(resultsEntitys.get(position).getCreatedAt().split("T")[0]);
+                ((MyViewHolder) holder).rl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, GenWebView.class);
+                        intent.putExtra(Constants.WEB_URL, resultsEntitys.get(position).getUrl());
+                        intent.putExtra(Constants.TITLE, resultsEntitys.get(position).getDesc());
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        if (normalData != null && !normalData.getError()) {
-            return normalData.getResults().size();
+        if (resultsEntitys != null) {
+            return resultsEntitys.size();
         } else {
             return 0;
         }
+    }
+
+    //继续添加新的
+    public void addNormalData(NormalData normalData, String mode) {
+        resultsEntitys.addAll(normalData.getResults());
+        this.mode = mode;
+    }
+
+    //清除resultsEntitys
+    public void clearNormalData() {
+        resultsEntitys.clear();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -80,6 +115,7 @@ public class RecycleAdapter extends RecyclerView.Adapter {
         TextView title;
         TextView provider;
         TextView time;
+        ImageView iv;
         RelativeLayout rl;
 
         public MyViewHolder(View view) {
@@ -88,6 +124,7 @@ public class RecycleAdapter extends RecyclerView.Adapter {
             provider = (TextView) view.findViewById(R.id.provider);
             time = (TextView) view.findViewById(R.id.time);
             rl = (RelativeLayout) view.findViewById(R.id.rl);
+            iv = (ImageView) view.findViewById(R.id.iv);
         }
     }
 }

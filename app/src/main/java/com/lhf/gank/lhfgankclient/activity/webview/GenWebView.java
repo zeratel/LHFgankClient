@@ -1,4 +1,4 @@
-package com.lhf.gank.lhfgankclient.webView;
+package com.lhf.gank.lhfgankclient.activity.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.activity.BaseActivity;
 import com.lhf.gank.lhfgankclient.utils.Constants;
@@ -28,6 +29,7 @@ import com.lhf.gank.lhfgankclient.utils.LogUtil;
 public class GenWebView extends BaseActivity {
 
     private Toolbar toolbar;
+    private CircularProgressView progressView;
 
     @Override
     protected String setTransitionMode() {
@@ -42,6 +44,7 @@ public class GenWebView extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.web_view);
         webView = (WebView) findViewById(R.id.wv);
+        progressView = (CircularProgressView)findViewById(R.id.progress_view);
 
         //toolbar的设置
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,6 +63,9 @@ public class GenWebView extends BaseActivity {
         toolbar.setTitle("");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
+
+        //正在加载
+        progressView.startAnimation();
 
     }
 
@@ -87,11 +93,15 @@ public class GenWebView extends BaseActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                //控制的动画的
+                progressView.setIndeterminate(false);
+                LogUtil.i("LHF", "onPageFinished");
                 super.onPageFinished(view, url);
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+
                 super.onPageStarted(view, url, favicon);
             }
 
