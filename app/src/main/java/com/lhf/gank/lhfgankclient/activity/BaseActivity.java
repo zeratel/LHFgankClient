@@ -3,9 +3,10 @@ package com.lhf.gank.lhfgankclient.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.widget.Toast;
+import android.view.View;
 
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.app.GankApp;
@@ -189,19 +190,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
-    private static Toast mToast;
+    private static Snackbar snackbar;
 
-    public void showToast(String message) {
-        if (mToast != null) {
-            mToast.setText(message);
+    public void showToast(View root,String message) {
+        if (snackbar != null) {
+            snackbar.setText(message);
         } else {
-            mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+            snackbar = Snackbar.make(root, message, Snackbar.LENGTH_LONG);
         }
-        mToast.show();
-    }
-
-    public void showToast(int messageId) {
-        showToast(getString(messageId));
+        snackbar.show();
     }
 
     public void showAlertDialog(String title, String message) {

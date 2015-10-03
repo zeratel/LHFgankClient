@@ -57,4 +57,5 @@ public class Constants {
     public static final String WEB_URL = "WEB_URL";
 
     public static final String TITLE = "TITLE";
+    public static final String NET_ERROR_RESPONSE = "网络异常，请稍后重试";
 }

@@ -3,9 +3,10 @@ package com.lhf.gank.lhfgankclient.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -37,6 +38,7 @@ public class NetworkUtil extends GankApp {
 
 	private static Context mContext;
 	private String TAG = "";
+	private View root;
 
 	public NetworkUtil(Context mContext) {
 		this.mContext = mContext;
@@ -45,6 +47,10 @@ public class NetworkUtil extends GankApp {
 	public NetworkUtil(Context mContext, String tag) {
 		this.mContext = mContext;
 		this.TAG = tag;
+	}
+
+	public void setRoot(View root) {
+		this.root = root;
 	}
 
 	public boolean isConnected() {
@@ -70,8 +76,9 @@ public class NetworkUtil extends GankApp {
 
 		try {
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 
 			}
@@ -90,8 +97,9 @@ public class NetworkUtil extends GankApp {
 
 		try {
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 
 			}
@@ -267,8 +275,9 @@ public class NetworkUtil extends GankApp {
 
 		try {
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 
 			}
@@ -325,8 +334,9 @@ public class NetworkUtil extends GankApp {
 			ErrorListener error) {
 		try {
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 
 			}
@@ -361,8 +371,9 @@ public class NetworkUtil extends GankApp {
 			}
 
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 			}
 
@@ -387,8 +398,9 @@ public class NetworkUtil extends GankApp {
 			}
 
 			if (!isConnected()) {
-				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
-						.show();
+//				Toast.makeText(mContext, "网络不可用，请检查网络连接！！~", Toast.LENGTH_LONG)
+//						.show();
+				Snackbar.make(root,"网络不可用，请检查网络连接！！~",Snackbar.LENGTH_LONG).show();
 				return;
 			}
 

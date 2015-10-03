@@ -18,6 +18,7 @@ package com.lhf.gank.lhfgankclient.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.badoo.mobile.util.WeakHandler;
 import com.google.gson.Gson;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.adapter.RecycleAdapter;
@@ -45,6 +47,7 @@ public class HomeFragment extends Fragment {
     private int num = 20;
     private int pages = 1;
     private RecycleAdapter recycleAdapter;
+    private View view;
 
     public HomeFragment(String mode) {
         this.mode = mode;
@@ -54,19 +57,41 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.home_fragment, container, false);
+        view = inflater.inflate(R.layout.home_fragment, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefreshlayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         recycleAdapter = new RecycleAdapter(getActivity());
+
+        setupRecyclerView(recyclerView);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                getData("/" + num + "/" + pages);
+
+                new WeakHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         return view;
     }
 
     @Override
     public void onStart() {
 
-        setupRecyclerView(recyclerView);
-
         getData("/" + num + "/" + pages);
+
         super.onStart();
     }
 
@@ -111,6 +136,7 @@ public class HomeFragment extends Fragment {
 
         // /*建立HTTP Get对象*/
         NetworkUtil networkUtil = new NetworkUtil(getActivity());
+        networkUtil.setRoot(view);
         networkUtil.getStringForGet(url.trim(), null,
                 new Response.Listener<String>() {
 
@@ -118,9 +144,12 @@ public class HomeFragment extends Fragment {
                     public void onResponse(String arg0) {
                         LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
                         Gson gson = new Gson();
-                        NormalData normalData = gson.fromJson(arg0,NormalData.class);
+                        NormalData normalData = gson.fromJson(arg0, NormalData.class);
                         recycleAdapter.setNormalData(normalData);
                         recycleAdapter.notifyDataSetChanged();
+
+//                        停止刷新
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
 
@@ -128,6 +157,9 @@ public class HomeFragment extends Fragment {
                     public void onErrorResponse(VolleyError arg0) {
 
                         LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + arg0);
+                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+//                        停止刷新
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
 
@@ -146,6 +178,9 @@ public class HomeFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
 //        recyclerView.addItemDecoration();
+
+//        LHFSwipeRefreshLayout lhfSwipeRefreshLayout = new LHFSwipeRefreshLayout();
+
     }
 
 }
