@@ -51,18 +51,21 @@ public class GenWebView extends BaseActivity {
         //按钮的效果
         MaterialMenuDrawable materialMenuDrawable = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         materialMenuDrawable.animateIconState(MaterialMenuDrawable.IconState.ARROW);
-        toolbar.setNavigationIcon(materialMenuDrawable);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         //需要先设置一次。。。
         toolbar.setTitle("");
         toolbar.setTitleTextColor(Color.WHITE);
+        //注意顺序！！！
         setSupportActionBar(toolbar);
+
+        toolbar.setNavigationIcon(materialMenuDrawable);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
 
         //正在加载
         progressView.startAnimation();

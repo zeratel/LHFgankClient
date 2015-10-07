@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity {
         toolbar.setTitle("");
         toolbar.setTitleTextColor(0xffffffff);
 
+        //注意顺序！！！放在之前
         setSupportActionBar(toolbar);
 
         //使用NavigationView，使用theme，而不是style和background

@@ -26,9 +26,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         if (TextUtils.isEmpty(setTransitionMode())){
             //默认右边
-            overridePendingTransition(R.anim.right_in,R.anim.right_out);
+//            overridePendingTransition(R.anim.right_in,R.anim.right_out);
         } else {
 
             switch (setTransitionMode()) {
@@ -75,33 +76,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (TextUtils.isEmpty(setTransitionMode())){
-            //默认右边
-            overridePendingTransition(R.anim.right_in,R.anim.right_out);
-        } else {
-            switch (setTransitionMode()) {
-                case "LEFT":
-                    overridePendingTransition(R.anim.left_in,R.anim.left_out);
-                    break;
-                case "RIGHT":
-                    overridePendingTransition(R.anim.right_in,R.anim.right_out);
-                    break;
-                case "TOP":
-                    overridePendingTransition(R.anim.top_in,R.anim.top_out);
-                    break;
-                case "BOTTOM":
-                    overridePendingTransition(R.anim.bottom_in,R.anim.bottom_out);
-                    break;
-                case "SCALE":
-                    overridePendingTransition(R.anim.scale_in,R.anim.scale_out);
-                    break;
-                case "FADE":
-                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-                    break;
-                default:
-                    break;
-            }
-        }
+
         System.gc();
         AppManager.getAppManager().removeActivity(this);
     }
