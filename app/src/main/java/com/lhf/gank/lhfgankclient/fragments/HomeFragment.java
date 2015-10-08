@@ -188,11 +188,10 @@ public class HomeFragment extends Fragment {
 
     // 获取数据
     private void getGanHuo(String url) {
-
         // /*建立HTTP Get对象*/
         NetworkUtil networkUtil = new NetworkUtil(context);
         networkUtil.setRoot(view);
-        networkUtil.getStringForGet(url.trim(), null,
+        networkUtil.getStringForGet(url, null,
                 new Response.Listener<String>() {
 
                     @Override
@@ -224,7 +223,7 @@ public class HomeFragment extends Fragment {
                     public void onErrorResponse(VolleyError arg0) {
 
                         LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + arg0);
-                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+//                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
 //                        停止刷新
                         swipeRefreshLayout.setRefreshing(false);
                     }

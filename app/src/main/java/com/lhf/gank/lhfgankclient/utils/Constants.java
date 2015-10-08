@@ -1,5 +1,7 @@
 package com.lhf.gank.lhfgankclient.utils;
 
+import java.net.URLEncoder;
+
 /**
  *
  */
@@ -19,18 +21,19 @@ public class Constants {
     //Gank地址
     public static final String GankURL = "http://gank.avosapps.com/api/data";
 
-    //福利
-    public static final String FuLiURL = GankURL + "/福利";
+    //福利 "/福利"
+
+    public static String FuLiURL = GankURL + "/" + encode("福利");
     //Android
     public static final String AndroidURL = GankURL + "/Android";
     //ios
     public static final String iosURL = GankURL + "/iOS";
     //休息
-    public static final String restURL = GankURL + "/休息视频";
+    public static final String restURL = GankURL + "/" + encode("休息视频");
     //拓展
-    public static final String tuozhanURL = GankURL + "/拓展资源";
+    public static final String tuozhanURL = GankURL + "/" + encode("拓展资源");
     //前端
-    public static final String qianduanURL = GankURL + "/前端";
+    public static final String qianduanURL = GankURL + "/" + encode("前端");
     //all
     public static final String allURL = GankURL + "/all";
 
@@ -60,4 +63,16 @@ public class Constants {
     public static final String NET_ERROR_RESPONSE = "网络异常，请稍后重试";
     public static final String IS_ALL_LOAD = "没有更多内容啦~~~";
     public static final String API_ERROR_RESPONSE = "API异常，请稍后重试";
+    private static String a = "";
+
+    public static String encode(String temp) {
+        try {
+            temp = URLEncoder.encode(temp, "utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return temp;
+        }
+    }
+
 }

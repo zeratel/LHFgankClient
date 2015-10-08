@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -118,7 +119,7 @@ public class NetworkUtil extends GankApp {
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					HashMap<String, String> headers = new HashMap<String, String>();
-//					addCommHeaders(headers);
+					addCommHeaders(headers);
 					return headers;
 				}
 
@@ -423,54 +424,54 @@ public class NetworkUtil extends GankApp {
 		cancelPendingRequests(this.TAG);
 	}
 
-//	public static void addCommHeaders(HashMap<String, String> request) {
-//		if (cookies == null)
-//			cookies = "";
-//		// request.put("Cookie", cookies);
-//		request.put("Accept",
-//				"text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2");
-//		request.put("Connection", "keep-alive");
-//		// request.put("Content-type",
-//		// "application/x-www-form-urlencoded");
-//		request.put("x-requested-with", " XMLHttpRequest");
-//		request.put("Content-Type", "application/json");
-//		request.put("Content-Encoding", "utf-8");
-//		request.put("x-phoneType", "android");
-//
-//		// 添加推送所需要用的参数 13-12-10 qiufeng 添加
-//		// request.put("x-token", newRandomUUID());
-//		request.put("x-version", InfoShouji.getVersion(mContext) + "");// 应用版本
-//		request.put("x-osVersion", InfoShouji.getAndroidVersion() + "");// 手机版本
-//		request.put("x-phoneModel", InfoShouji.getShoujixinghao() + "");// 手机型号
-//
-//		request.put("x-osVersion", android.os.Build.VERSION.RELEASE + "");// 系统版本
-//		request.put("x-phoneModel", android.os.Build.DEVICE + "");// 手机型号
-//
+	public static void addCommHeaders(HashMap<String, String> request) {
+		if (cookies == null)
+			cookies = "";
+		// request.put("Cookie", cookies);
+		request.put("Accept",
+				"text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2");
+		request.put("Connection", "keep-alive");
+//		 request.put("Content-type",
+//		 "application/x-www-form-urlencoded");
+		request.put("x-requested-with", " XMLHttpRequest");
+		request.put("Content-Type", "application/json");
+		request.put("Content-Encoding", "utf-8");
+		request.put("x-phoneType", "android");
+
+		// 添加推送所需要用的参数 13-12-10 qiufeng 添加
+		// request.put("x-token", newRandomUUID());
+		request.put("x-version", InfoShouji.getVersion(mContext) + "");// 应用版本
+		request.put("x-osVersion", InfoShouji.getAndroidVersion() + "");// 手机版本
+		request.put("x-phoneModel", InfoShouji.getShoujixinghao() + "");// 手机型号
+
+		request.put("x-osVersion", android.os.Build.VERSION.RELEASE + "");// 系统版本
+		request.put("x-phoneModel", android.os.Build.DEVICE + "");// 手机型号
+
 //		String temp = GlobalContainer.getInstance().getParam(
 //				Constants.YXBCOOKIE, String.class);
 //		if (TextUtils.isEmpty(temp)) {
 //			temp = "";
 //		}
 //		request.put("x-YxbCookie", temp + "");// cookie
-//
-//		String imsi = InfoShouji.getImsi(YXBaoApplication.getInstance()
-//				.getApplicationContext()) + "";
-//		if (TextUtils.isEmpty(imsi)) {
-//			imsi = "";
-//		}
-//		request.put("x-imsi", imsi);// imsi
-//
-//		String imei = InfoShouji.getImei(YXBaoApplication.getInstance()
-//				.getApplicationContext()) + "";
-//		request.put("x-imei", imei);// imei
-//
-//		request.put(
-//				"x-simNumber",
-//				InfoShouji.getPhoneNumber(YXBaoApplication.getInstance()
-//						.getApplicationContext()) + "");
-//
-//		request.put("x-deviceToken", "");
-//
+
+		String imsi = InfoShouji.getImsi(GankApp.getInstance()
+				.getApplicationContext()) + "";
+		if (TextUtils.isEmpty(imsi)) {
+			imsi = "";
+		}
+		request.put("x-imsi", imsi);// imsi
+
+		String imei = InfoShouji.getImei(GankApp.getInstance()
+				.getApplicationContext()) + "";
+		request.put("x-imei", imei);// imei
+
+		request.put(
+				"x-simNumber",
+				InfoShouji.getPhoneNumber(GankApp.getInstance()
+						.getApplicationContext()) + "");
+
+		request.put("x-deviceToken", "");
+
 //		request.put(
 //				"x-channeId",
 //				ParseXMLtoBaiduChannel.getInstance(mContext
@@ -482,7 +483,7 @@ public class NetworkUtil extends GankApp {
 //			regId = "";
 //		}
 //		request.put("x-androidDeviceToken", regId);// 小米推送
-//	}
+	}
 
 	private static String newRandomUUID() {
 		String uuidRaw = UUID.randomUUID().toString();
