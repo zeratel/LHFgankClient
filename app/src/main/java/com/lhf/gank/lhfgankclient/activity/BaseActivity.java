@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.app.GankApp;
 import com.lhf.gank.lhfgankclient.utils.AppManager;
+import com.lhf.gank.lhfgankclient.utils.LogUtil;
+import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
 
 /**
  * com.lhf.gank.lhfgankclient.activity
@@ -26,34 +29,35 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-//        if (TextUtils.isEmpty(setTransitionMode())){
-//            //默认右边
-            overridePendingTransition(R.anim.right_in,0);
-//        } else {
-//
-//            switch (setTransitionMode()) {
-//                case "LEFT":
-//                    overridePendingTransition(R.anim.left_in,R.anim.left_out);
-//                    break;
-//                case "RIGHT":
-//                    overridePendingTransition(R.anim.right_in,R.anim.right_out);
-//                    break;
-//                case "TOP":
-//                    overridePendingTransition(R.anim.top_in,R.anim.top_out);
-//                    break;
-//                case "BOTTOM":
-//                    overridePendingTransition(R.anim.bottom_in,R.anim.bottom_out);
-//                    break;
-//                case "SCALE":
-//                    overridePendingTransition(R.anim.scale_in,R.anim.scale_out);
-//                    break;
-//                case "FADE":
-//                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
+        if (TextUtils.isEmpty(setTransitionMode())){
+            //默认右边
+        //0竟然代表的是透明的。。。
+        overridePendingTransition(R.anim.right_in, R.anim.nothing);
+        } else {
+
+            switch (setTransitionMode()) {
+                case "LEFT":
+                    overridePendingTransition(R.anim.left_in,R.anim.left_out);
+                    break;
+                case "RIGHT":
+                    overridePendingTransition(R.anim.right_in,R.anim.right_out);
+                    break;
+                case "TOP":
+                    overridePendingTransition(R.anim.top_in,R.anim.top_out);
+                    break;
+                case "BOTTOM":
+                    overridePendingTransition(R.anim.bottom_in,R.anim.bottom_out);
+                    break;
+                case "SCALE":
+                    overridePendingTransition(R.anim.scale_in,R.anim.scale_out);
+                    break;
+                case "FADE":
+                    overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+                    break;
+                default:
+                    break;
+            }
+        }
         super.onCreate(savedInstanceState);
         mContext = this;
         TAG = this.getClass().getName();
@@ -72,10 +76,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onPause();
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        overridePendingTransition(0, R.anim.right_out);
+        NetworkUtil.getInstance(mContext).cancelRequest();
+        LogUtil.i("LHF","onDestroy");
         System.gc();
         AppManager.getAppManager().removeActivity(this);
     }
@@ -167,7 +174,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static Snackbar snackbar;
 
-    public void showToast(View root,String message) {
+    public void showToast(View root, String message) {
         if (snackbar != null) {
             snackbar.setText(message);
         } else {
@@ -198,7 +205,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void finish() {
         super.finish();
 //        dismissProgressDialog();
-        AppManager.getAppManager().removeActivity(this);
+        overridePendingTransition(R.anim.nothing, R.anim.right_out);
+//        AppManager.getAppManager().removeActivity(this);
 
     }
 

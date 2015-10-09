@@ -5,10 +5,15 @@
         <!-- Customize your theme here. -->
     </style>
     <style name="BaseActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- 颜色管理 -->
         <item name="colorPrimary">@color/material_blue_500</item>
         <item name="colorPrimaryDark">@color/material_blue_700</item>
         <item name="colorAccent">@color/material_purple_500</item>
         <item name="android:windowBackground">@color/window_background</item>
+        <!-- 防黑屏 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+
     </style>
 
     <style name="Widget.CardContent" parent="android:Widget">

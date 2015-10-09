@@ -189,7 +189,7 @@ public class HomeFragment extends Fragment {
     // 获取数据
     private void getGanHuo(String url) {
         // /*建立HTTP Get对象*/
-        NetworkUtil networkUtil = new NetworkUtil(context);
+        NetworkUtil networkUtil = NetworkUtil.getInstance(context);
         networkUtil.setRoot(view);
         networkUtil.getStringForGet(url, null,
                 new Response.Listener<String>() {

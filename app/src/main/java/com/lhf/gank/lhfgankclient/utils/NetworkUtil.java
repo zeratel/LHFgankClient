@@ -38,16 +38,28 @@ import java.util.UUID;
 public class NetworkUtil extends GankApp {
 
 	private static Context mContext;
-	private String TAG = "";
+	private String TAG = "NetworkUtil";
 	private View root;
 
-	public NetworkUtil(Context mContext) {
+	private NetworkUtil(Context mContext) {
 		this.mContext = mContext;
 	}
 
-	public NetworkUtil(Context mContext, String tag) {
-		this.mContext = mContext;
-		this.TAG = tag;
+//	public NetworkUtil(Context mContext, String tag) {
+//		this.mContext = mContext;
+//		this.TAG = tag;
+//	}
+	private static NetworkUtil networkUtil;
+
+	public static NetworkUtil getInstance(Context mContext) {
+		if (networkUtil == null) {
+			synchronized (NetworkUtil.class){
+				if (networkUtil == null) {
+					networkUtil = new NetworkUtil(mContext);
+				}
+			}
+		}
+		return networkUtil;
 	}
 
 	public void setRoot(View root) {

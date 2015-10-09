@@ -81,8 +81,10 @@ public class RecycleAdapter extends RecyclerView.Adapter {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, GenWebView.class);
-                        intent.putExtra(Constants.WEB_URL, resultsEntitys.get(position).getUrl());
-                        intent.putExtra(Constants.TITLE, resultsEntitys.get(position).getDesc());
+                        if (position < resultsEntitys.size()) {
+                            intent.putExtra(Constants.WEB_URL, resultsEntitys.get(position).getUrl());
+                            intent.putExtra(Constants.TITLE, resultsEntitys.get(position).getDesc());
+                        }
                         context.startActivity(intent);
                     }
                 });

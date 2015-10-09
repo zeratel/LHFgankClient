@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LHFgankClient</string>
+    <string name="app_name">干货</string>
 
     <string name="categorical_data">分类数据</string>
     <string name="every_data">每日数据</string>
