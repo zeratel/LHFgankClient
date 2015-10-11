@@ -64,6 +64,10 @@ public class Constants {
     public static final String IS_ALL_LOAD = "没有更多内容啦~~~";
     public static final String API_ERROR_RESPONSE = "API异常，请稍后重试";
     private static String a = "";
+    public static final String about_us_title_url = "http://gank.io/";
+    public static final String about_us_mailbox_url = "http://gank.io/subscribe";
+    public static final String about_us_tools_url = "http://gank.io/tools";
+    public static final String about_us_code_url = "http://gank.io/download";
 
     public static String encode(String temp) {
         try {

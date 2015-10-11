@@ -36,6 +36,13 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden"
             android:theme="@style/BaseActivity"
             />
+        <activity
+            android:name=".activity.AboutUs"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:theme="@style/BaseActivity"
+            />
 
     </application>
 

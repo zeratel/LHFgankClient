@@ -5,4 +5,9 @@
     <string name="every_data">每日数据</string>
     <string name="random_data">随机数据</string>
     <string name="about_us">干货是什么</string>
+    <string name="about_us_title">干货集中营</string>
+    <string name="about_us_content">每日分享妹子图 和 技术干货，还有供大家中午休息的休闲视频。</string>
+    <string name="about_us_mailbox">订阅到邮箱</string>
+    <string name="about_us_tools">经得起检验的工具集</string>
+    <string name="about_us_code">开源大法好</string>
 </resources>

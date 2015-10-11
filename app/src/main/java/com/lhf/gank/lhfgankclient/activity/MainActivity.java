@@ -13,10 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.fragments.HomeFragment;
 import com.lhf.gank.lhfgankclient.utils.Constants;
+import com.lhf.gank.lhfgankclient.utils.LogUtil;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
@@ -133,8 +135,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-//        showProgressDialog();
-
     }
 
     private void initTitleStr() {
@@ -190,7 +190,35 @@ public class MainActivity extends BaseActivity {
                         materialMenuDrawable.animateIconState(MaterialMenuDrawable.IconState.BURGER);
                         drawer_layout.closeDrawers();
 
-//                        LogUtil.i("LHF", "menuItem.getTitle():"+menuItem.getTitle());
+                        LogUtil.i("LHF", "menuItem.getTitle():" + menuItem.getTitle());
+                        switch (menuItem.getTitle().toString()) {
+                            case Constants.categorical_data:
+                                //分类数据
+
+                                break;
+                            case Constants.every_data:
+                                //每日数据
+
+                                break;
+                            case Constants.random_data:
+                                //随机数据
+
+                                break;
+                            case Constants.about_us:
+                                //关于我们
+                                new WeakHandler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        readyGo(AboutUs.class);
+                                    }
+                                },300);
+                                break;
+
+                            default:
+                                break;
+                        }
+
+
                         return true;
                     }
                 });
