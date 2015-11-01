@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
         }
 
         //viewPage，使用的SmartTabLayout
-        initTitleStr();
+        initTitleStr(Constants.categorical_data);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.tabs);
         if (viewPager != null) {
@@ -137,13 +137,15 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void initTitleStr() {
+    private void initTitleStr(String mode) {
 
         if (viewpagerTitleStr == null) {
 
             viewpagerTitleStr = new ArrayList<String>();
-            //all
-            viewpagerTitleStr.add(Constants.allStr);
+            if (mode.equals(Constants.categorical_data)) {
+                //all
+                viewpagerTitleStr.add(Constants.allStr);
+            }
             //福利
             viewpagerTitleStr.add(Constants.FuLiStr);
             //Android
@@ -194,7 +196,7 @@ public class MainActivity extends BaseActivity {
                         switch (menuItem.getTitle().toString()) {
                             case Constants.categorical_data:
                                 //分类数据
-
+                                toCategorical();
                                 break;
                             case Constants.every_data:
                                 //每日数据
@@ -202,7 +204,7 @@ public class MainActivity extends BaseActivity {
                                 break;
                             case Constants.random_data:
                                 //随机数据
-
+                                toRondom();
                                 break;
                             case Constants.about_us:
                                 //关于我们
@@ -211,7 +213,7 @@ public class MainActivity extends BaseActivity {
                                     public void run() {
                                         readyGo(AboutUs.class);
                                     }
-                                },300);
+                                }, 300);
                                 break;
 
                             default:
@@ -223,6 +225,16 @@ public class MainActivity extends BaseActivity {
                     }
                 });
 
+    }
+
+    //随机数据
+    private void toRondom(){
+        initTitleStr(Constants.random_data);
+    }
+
+    //分类数据
+    private void toCategorical(){
+        initTitleStr(Constants.categorical_data);
     }
 
     //viewPage的adapter
