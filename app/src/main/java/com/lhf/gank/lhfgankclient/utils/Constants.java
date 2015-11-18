@@ -69,6 +69,8 @@ public class Constants {
     public static final String about_us_tools_url = "http://gank.io/tools";
     public static final String about_us_code_url = "http://gank.io/download";
 
+    public static final String app_name = "干货";
+
     public static String encode(String temp) {
         try {
             temp = URLEncoder.encode(temp, "utf-8");
