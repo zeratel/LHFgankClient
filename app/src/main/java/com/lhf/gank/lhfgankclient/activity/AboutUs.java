@@ -25,6 +25,7 @@ public class AboutUs extends BaseActivity implements View.OnClickListener{
     private TextView about_us_tools;
     private TextView about_us_code;
 
+
     @Override
     protected String setTransitionMode() {
         return null;

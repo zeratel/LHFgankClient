@@ -1,8 +1,21 @@
 apply plugin: 'com.android.application'
 
+//tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+//    //1.0新版本使用jniFolders
+//    pkgTask.jniFolders = new HashSet<File>()
+//    pkgTask.jniFolders.add(new File(buildDir, 'native-libs'))
+//
+////    Error:(22, 0) Cannot set the value of read-only property 'jniFolders' on task ':lotteryApp3.7:packageHuaweiDebug'.
+////    <a href="openFile:/Users/zeratel3000/Documents/workspace/lotteryApp3.7/build.gradle">Open File</a>
+//
+//    //老版本
+////    pkgTask.jniDir new File(buildDir, 'native-libs')
+//
+//}
+
 android {
     compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "com.lhf.gank.lhfgankclient"
@@ -17,6 +30,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -30,6 +44,10 @@ dependencies {
     compile 'com.ogaclejapan.smarttablayout:library:1.4.1'
     compile 'com.badoo.mobile:android-weak-handler:1.1'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.4.0'
+
+    //Test
+//    compile 'com.github.zeratel:LibTest:3.1'
+//    compile 'com.lhf.test.lhfandroidutils:lhfandroidutils:1.0.1'
 }
 
 //dependencies = [

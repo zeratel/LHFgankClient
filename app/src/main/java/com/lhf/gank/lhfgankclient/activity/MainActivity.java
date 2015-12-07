@@ -25,6 +25,7 @@ import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.fragments.HomeFragment;
 import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
+import com.lhf.gank.lhfgankclient.utils.PreferencesSaver;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
@@ -145,10 +146,14 @@ public class MainActivity extends BaseActivity {
         });
 
         //没有快捷方式则加上快捷方式
-        if (!hasShortcut(this,Constants.app_name)) {
-
+        //擦原生的都不好使
+        //有时候原生的也靠不住啊。。。
+//        if (hasShortcut(this,Constants.app_name)) {
+//        if (new LauncherUtil().isShortCutExist(this, Constants.app_name)) {
+        if (!PreferencesSaver.getBooleanAttr(this,Constants.short_cut)) {
 //            addShortcut(this,);
-            creatShortCut(this,Constants.app_name,R.mipmap.ic_launcher);
+            creatShortCut(this, Constants.app_name, R.mipmap.ic_launcher);
+            PreferencesSaver.setBooleanAttr(this,Constants.short_cut,true);
         }
 
     }
@@ -245,12 +250,12 @@ public class MainActivity extends BaseActivity {
     }
 
     //随机数据
-    private void toRondom(){
+    private void toRondom() {
         initTitleStr(Constants.random_data);
     }
 
     //分类数据
-    private void toCategorical(){
+    private void toCategorical() {
         initTitleStr(Constants.categorical_data);
     }
 
@@ -312,31 +317,51 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 判断是否存在快捷方式
-     * */
-    public boolean hasShortcut(Activity activity,String shortcutName)
-    {
+     */
+    public boolean hasShortcut(Activity activity, String shortcutName) {
         String url = "";
-        int systemversion = Integer.parseInt(android.os.Build.VERSION.SDK);
+        boolean result = false;
+        try {
+            int systemversion = Integer.parseInt(android.os.Build.VERSION.SDK);
 /*大于8的时候在com.android.launcher2.settings 里查询（未测试）*/
-        if(systemversion < 8){
-            url = "content://com.android.launcher.settings/favorites?notify=true";
-        }else{
-            url = "content://com.android.launcher2.settings/favorites?notify=true";
+
+//        2.2版本以前的URI是：content://com.android.launcher.settings/favorites?notify=true
+//    2.2~4.3版本的URI是：content://com.android.launcher2.settings/favorites?notify=true
+//    4.4版本以上的目前都是：content://com.android.launcher3.settings/favorites？notify=true
+            if (systemversion < 8) {
+                url = "content://com.android.launcher.settings/favorites?notify=true";
+            } else if (systemversion < 19) {
+                url = "content://com.android.launcher2.settings/favorites?notify=true";
+            } else {
+                url = "content://com.android.launcher3.settings/favorites?notify=true";
+//                 content://com.android.launcher3.settings/favorites?notify=true
+//            com.android.launcher3.settings
+            }
+            ContentResolver resolver = activity.getContentResolver();
+            Cursor cursor = resolver.query(Uri.parse(url), null, "title=?", new String[]{shortcutName}, null);
+//        if (cursor != null && cursor.moveToFirst()) {
+//            cursor.close();
+//            return true;
+//        }
+//        return false;
+            if (cursor != null && cursor.getCount() > 0) {
+                result = true;
+            }
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e("LHF","Le:"+e.getMessage());
+            result = false;
         }
-        ContentResolver resolver = activity.getContentResolver();
-        Cursor cursor = resolver.query(Uri.parse(url), null, "title=?",new String[] {shortcutName}, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            cursor.close();
-            return true;
-        }
-        return false;
+        return result;
     }
 
     /**
      * 添加快捷方式
-     * */
-    public void creatShortCut(Activity activity,String shortcutName,int resourceId)
-    {
+     */
+    public void creatShortCut(Activity activity, String shortcutName, int resourceId) {
         Intent intent = new Intent();
         intent.setClass(activity, activity.getClass());
 /*以下两句是为了在卸载应用的时候同时删除桌面快捷方式*/
@@ -355,14 +380,14 @@ public class MainActivity extends BaseActivity {
 //发送广播。OK
         activity.sendBroadcast(shortcutintent);
     }
+
     /**
      * 删除快捷方式
-     * */
-    public void deleteShortCut(Activity activity,String shortcutName)
-    {
+     */
+    public void deleteShortCut(Activity activity, String shortcutName) {
         Intent shortcut = new Intent("com.android.launcher.action.UNINSTALL_SHORTCUT");
 //快捷方式的名称
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME,shortcutName);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortcutName);
 //在网上看到到的基本都是一下几句，测试的时候发现并不能删除快捷方式。
 //String appClass = activity.getPackageName()+"."+ activity.getLocalClassName();
 //ComponentName comp = new ComponentName( activity.getPackageName(), appClass);
@@ -372,8 +397,25 @@ public class MainActivity extends BaseActivity {
         intent.setClass(activity, activity.getClass());
         intent.setAction("android.intent.action.MAIN");
         intent.addCategory("android.intent.category.LAUNCHER");
-        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT,intent);
+        shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
         activity.sendBroadcast(shortcut);
     }
+
+//    static String getAuthorityFromPermission(Context context, String permission){
+//        if (permission == null) return null;
+//        List<PackageInfo> packs = context.getPackageManager().getInstalledPackages(PackageManager.GET_PROVIDERS);
+//        if (packs != null) {
+//            for (PackageInfo pack : packs) {
+//                ProviderInfo[] providers = pack.providers;
+//                if (providers != null) {
+//                    for (ProviderInfo provider : providers) {
+//                        if (permission.equals(provider.readPermission)) return provider.authority;
+//                        if (permission.equals(provider.writePermission)) return provider.authority;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 }

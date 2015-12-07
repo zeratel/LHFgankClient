@@ -70,6 +70,7 @@ public class Constants {
     public static final String about_us_code_url = "http://gank.io/download";
 
     public static final String app_name = "干货";
+    public static final String short_cut = "shortCut";
 
     public static String encode(String temp) {
         try {
