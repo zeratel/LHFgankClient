@@ -23,7 +23,7 @@ public class Constants {
 
     //福利 "/福利"
 
-    public static String FuLiURL = GankURL + "/" + encode("福利");
+    public static final String FuLiURL = GankURL + "/" + encode("福利");
     //Android
     public static final String AndroidURL = GankURL + "/Android";
     //ios

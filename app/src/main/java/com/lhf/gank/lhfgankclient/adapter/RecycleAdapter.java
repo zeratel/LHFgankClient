@@ -49,11 +49,13 @@ public class RecycleAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (resultsEntitys != null) {
 
+            if (!TextUtils.isEmpty(mode)
+                    && ((MyViewHolder) holder).title != null
+                    && ((MyViewHolder) holder).time != null) {
 
-
-            if (!TextUtils.isEmpty(mode) && mode.equals(Constants.FuLiStr)) {
-                ((MyViewHolder) holder).iv.setVisibility(View.VISIBLE);
-                //以前我写的
+                if (mode.equals(Constants.FuLiStr)) {
+                    ((MyViewHolder) holder).iv.setVisibility(View.VISIBLE);
+                    //以前我写的
 //                if (!TextUtils.isEmpty(tempWallPics.get(i).getUrl())) {
 //                    Picasso.with(mContext)
 //                            .load(tempWallPics.get(i).getUrl())
@@ -65,29 +67,30 @@ public class RecycleAdapter extends RecyclerView.Adapter {
 //                            .error(R.drawable.white_plank).fit()
 //                            .centerCrop().into(imageView);
 //                }
-                Picasso.with(context).load(Uri.parse(resultsEntitys.get(position)
-                        .getUrl())).into(((MyViewHolder) holder).iv);
+                    Picasso.with(context).load(Uri.parse(resultsEntitys.get(position)
+                            .getUrl())).into(((MyViewHolder) holder).iv);
 
-                ((MyViewHolder) holder).title.setVisibility(View.GONE);
-                ((MyViewHolder) holder).provider.setVisibility(View.GONE);
-                ((MyViewHolder) holder).time.setVisibility(View.GONE);
+                    ((MyViewHolder) holder).title.setVisibility(View.GONE);
+                    ((MyViewHolder) holder).provider.setVisibility(View.GONE);
+                    ((MyViewHolder) holder).time.setVisibility(View.GONE);
 
-            } else {
-                ((MyViewHolder) holder).iv.setVisibility(View.GONE);
-                ((MyViewHolder) holder).title.setText(resultsEntitys.get(position).getDesc());
-                ((MyViewHolder) holder).provider.setText(resultsEntitys.get(position).getWho());
-                ((MyViewHolder) holder).time.setText(resultsEntitys.get(position).getCreatedAt().split("T")[0]);
-                ((MyViewHolder) holder).rl.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(context, GenWebView.class);
-                        if (position < resultsEntitys.size()) {
-                            intent.putExtra(Constants.WEB_URL, resultsEntitys.get(position).getUrl());
-                            intent.putExtra(Constants.TITLE, resultsEntitys.get(position).getDesc());
+                } else {
+                    ((MyViewHolder) holder).iv.setVisibility(View.GONE);
+                    ((MyViewHolder) holder).title.setText(resultsEntitys.get(position).getDesc());
+                    ((MyViewHolder) holder).provider.setText(resultsEntitys.get(position).getWho());
+                    ((MyViewHolder) holder).time.setText(resultsEntitys.get(position).getCreatedAt().split("T")[0]);
+                    ((MyViewHolder) holder).rl.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, GenWebView.class);
+                            if (position < resultsEntitys.size()) {
+                                intent.putExtra(Constants.WEB_URL, resultsEntitys.get(position).getUrl());
+                                intent.putExtra(Constants.TITLE, resultsEntitys.get(position).getDesc());
+                            }
+                            context.startActivity(intent);
                         }
-                        context.startActivity(intent);
-                    }
-                });
+                    });
+                }
             }
         }
     }

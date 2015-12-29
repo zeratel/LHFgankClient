@@ -12,7 +12,6 @@ import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.app.GankApp;
 import com.lhf.gank.lhfgankclient.utils.AppManager;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
-import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
 
 /**
  * com.lhf.gank.lhfgankclient.activity
@@ -81,7 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NetworkUtil.getInstance(mContext).cancelRequest();
+//        NetworkUtil.getInstance(mContext).cancelRequest();
         LogUtil.i("LHF","onDestroy");
         System.gc();
         AppManager.getAppManager().removeActivity(this);

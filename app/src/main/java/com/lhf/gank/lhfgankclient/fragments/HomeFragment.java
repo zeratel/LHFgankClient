@@ -30,24 +30,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.badoo.mobile.util.WeakHandler;
-import com.google.gson.Gson;
 import com.lhf.gank.lhfgankclient.R;
 import com.lhf.gank.lhfgankclient.adapter.RecycleAdapter;
 import com.lhf.gank.lhfgankclient.beans.NormalData;
 import com.lhf.gank.lhfgankclient.utils.Constants;
 import com.lhf.gank.lhfgankclient.utils.LHFSwipeRefreshLayout;
 import com.lhf.gank.lhfgankclient.utils.LogUtil;
-import com.lhf.gank.lhfgankclient.utils.NetworkUtil;
+import com.lhf.gank.lhfgankclient.utils.NetworkClient;
+
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class HomeFragment extends Fragment {
 
     private String mode = "";
     private LHFSwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private int num = 20;
     private int pages = 1;
     private RecycleAdapter recycleAdapter;
     private View view;
@@ -84,7 +83,7 @@ public class HomeFragment extends Fragment {
                 pages = 1;
                 recycleAdapter.clearNormalData();
                 //手动下拉刷新
-                getData("/" + num + "/" + pages);
+                getData("" + pages);
 
                 //5秒后取消刷新的标记
                 new WeakHandler().postDelayed(new Runnable() {
@@ -103,7 +102,7 @@ public class HomeFragment extends Fragment {
             public void onLoad() {
 
                 //手动下拉刷新
-                getData("/" + num + "/" + pages);
+                getData("" + pages);
 
                 //设置状态
                 swipeRefreshLayout.setLoading(false);
@@ -137,7 +136,7 @@ public class HomeFragment extends Fragment {
                 new WeakHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        getData("/" + num + "/" + pages);
+                        getData("" + pages);
                     }
                 });
 
@@ -152,33 +151,33 @@ public class HomeFragment extends Fragment {
         switch (mode) {
             case Constants.allStr:
                 //all
-                getGanHuo(Constants.allURL + num_pages);
+                getGanHuo(Constants.allStr, num_pages);
                 break;
             case Constants.FuLiStr:
                 //福利
-                getGanHuo(Constants.FuLiURL + num_pages);
+                getGanHuo(Constants.FuLiStr, num_pages);
                 //福利的特殊处理
-                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(lines,StaggeredGridLayoutManager.VERTICAL));
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(lines, StaggeredGridLayoutManager.VERTICAL));
                 break;
             case Constants.AndroidStr:
                 //Android
-                getGanHuo(Constants.AndroidURL + num_pages);
+                getGanHuo(Constants.AndroidStr, num_pages);
                 break;
             case Constants.iosStr:
                 //ios
-                getGanHuo(Constants.iosURL + num_pages);
+                getGanHuo(Constants.iosStr, num_pages);
                 break;
             case Constants.restStr:
                 //休息
-                getGanHuo(Constants.restURL + num_pages);
+                getGanHuo(Constants.restStr, num_pages);
                 break;
             case Constants.tuozhanStr:
                 //拓展
-                getGanHuo(Constants.tuozhanURL + num_pages);
+                getGanHuo(Constants.tuozhanStr, num_pages);
                 break;
             case Constants.qianduanStr:
                 //前端
-                getGanHuo(Constants.qianduanURL + num_pages);
+                getGanHuo(Constants.qianduanStr, num_pages);
                 break;
 
             default:
@@ -187,22 +186,29 @@ public class HomeFragment extends Fragment {
     }
 
     // 获取数据
-    private void getGanHuo(String url) {
-        // /*建立HTTP Get对象*/
-        NetworkUtil networkUtil = NetworkUtil.getInstance(context);
-        networkUtil.setRoot(view);
-        networkUtil.getStringForGet(url, null,
-                new Response.Listener<String>() {
+    private void getGanHuo(String pages_mode, String num_pages) {
+
+        NetworkClient.getIntance().getFuLiURL(pages_mode, num_pages)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<NormalData>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
 
                     @Override
-                    public void onResponse(String arg0) {
-                        LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
+                    public void onError(Throwable e) {
+                        LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + e.getStackTrace());
+//                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+//                        停止刷新
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
 
-                        Gson gson = new Gson();
-                        NormalData normalData = gson.fromJson(arg0, NormalData.class);
-                        if (!normalData.getError() && normalData.getResults().size() != 0){
+                    @Override
+                    public void onNext(NormalData normalData) {
+                        if (!normalData.getError() && normalData.getResults().size() != 0) {
 
-                            recycleAdapter.addNormalData(normalData,mode);
+                            recycleAdapter.addNormalData(normalData, mode);
                             recycleAdapter.notifyDataSetChanged();
 
                             //停止刷新
@@ -210,24 +216,55 @@ public class HomeFragment extends Fragment {
 
                             //自动加一
                             pages += 1;
-                        }else if (normalData.getResults().size() == 0){
+                        } else if (normalData.getResults().size() == 0) {
                             Snackbar.make(view, Constants.IS_ALL_LOAD, Snackbar.LENGTH_LONG).show();
-                        }else{
+                        } else {
                             Snackbar.make(view, Constants.API_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
                         }
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError arg0) {
-
-                        LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + arg0);
-//                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
-//                        停止刷新
-                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
+
+        //对比
+        // /*建立HTTP Get对象*/
+//        NetworkUtil networkUtil = NetworkUtil.getInstance(context);
+//        networkUtil.setRoot(view);
+//        networkUtil.getStringForGet(url, null,
+//                new Response.Listener<String>() {
+//
+//                    @Override
+//                    public void onResponse(String arg0) {
+//                        LogUtil.i("LHF", "NetworkUtil.onResponse:" + arg0);
+//
+//                        Gson gson = new Gson();
+//                        NormalData normalData = gson.fromJson(arg0, NormalData.class);
+//                        if (!normalData.getError() && normalData.getResults().size() != 0){
+//
+//                            recycleAdapter.addNormalData(normalData,mode);
+//                            recycleAdapter.notifyDataSetChanged();
+//
+//                            //停止刷新
+//                            swipeRefreshLayout.setRefreshing(false);
+//
+//                            //自动加一
+//                            pages += 1;
+//                        }else if (normalData.getResults().size() == 0){
+//                            Snackbar.make(view, Constants.IS_ALL_LOAD, Snackbar.LENGTH_LONG).show();
+//                        }else{
+//                            Snackbar.make(view, Constants.API_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+//                        }
+//
+//                    }
+//                }, new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError arg0) {
+//
+//                        LogUtil.i("LHF", "NetworkUtil.onErrorResponse:" + arg0);
+////                        Snackbar.make(view, Constants.NET_ERROR_RESPONSE, Snackbar.LENGTH_LONG).show();
+////                        停止刷新
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//                });
 
     }
 
