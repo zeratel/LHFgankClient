@@ -53,7 +53,24 @@ public class HomeFragment extends Fragment {
     private Context context;
     private int lines = 2;
 
-    public HomeFragment(String mode) {
+//    Bundle args = new Bundle();
+//    args.putLong("key", value);
+//    yourFragment.setArguments(args);
+
+//    Type value = getArguments().getType("key");
+
+
+//    public HomeFragment(String mode) {
+//        this.mode = mode;
+//    }
+
+    //不要用上边的方法，否则打包会出错。。。
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
         this.mode = mode;
     }
 
@@ -279,7 +296,9 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(recycleAdapter);
         //设置Item增加、移除动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //添加分割线
+        //据说去掉动画就不会乱跳了
+//        recyclerView.setItemAnimator(null);
+        //添加分割线、
 //        recyclerView.addItemDecoration();
 
     }

@@ -198,7 +198,9 @@ public class MainActivity extends BaseActivity {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         if (viewpagerTitleStr != null) {
             for (String title : viewpagerTitleStr) {
-                adapter.addFragment(new HomeFragment(title), title);
+                HomeFragment homeFragment = new HomeFragment();
+                homeFragment.setMode(title);
+                adapter.addFragment(homeFragment, title);
             }
         }
         viewPager.setAdapter(adapter);
