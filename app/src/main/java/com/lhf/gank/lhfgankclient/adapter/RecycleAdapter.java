@@ -43,8 +43,7 @@ public class RecycleAdapter extends RecyclerView.Adapter {
                 context).inflate(R.layout.normal_item, parent,
                 false));
         return holder;
-
-
+        
     }
 
     @Override
